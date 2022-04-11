@@ -1,6 +1,6 @@
 ﻿namespace Repository.Interfaces
 {
-    public class IAccountRepository
+    public interface IUserRepository
     {
         
     }

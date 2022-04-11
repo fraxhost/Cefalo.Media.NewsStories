@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Service;
 using Service.DTOs;
 using Service.Interfaces;
 
@@ -22,7 +23,7 @@ namespace API.Controllers
         private readonly ApplicationDbContext _dbContext;
         private readonly ITokenService _tokenService;
 
-        public AccountsController(ApplicationDbContext dbContext, ITokenService tokenService)
+        public AccountsController(ApplicationDbContext dbContext, AccountService accountService, ITokenService tokenService)
         {
             _dbContext = dbContext;
             _tokenService = tokenService;
