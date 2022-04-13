@@ -11,5 +11,6 @@ namespace Service.Interfaces
         Task<User> GetUser(LoginDto loginDto);
         Task<bool> UserExists(RegisterDto registerDto);
         Task<bool> UserExists(LoginDto loginDto);
+        bool PasswordValidation(User user, LoginDto loginDto);
     }
 }
