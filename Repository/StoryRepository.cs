@@ -19,12 +19,14 @@ namespace Repository
         public async Task<IEnumerable<Story>> GetStories()
         {
             return await _dbContext.Stories
+                .AsNoTracking()
                 .ToListAsync();
         }
 
         public async Task<Story> GetStory(int storyId)
         {
             return await _dbContext.Stories
+                .AsNoTracking()
                 .FirstOrDefaultAsync(story => story.Id == storyId);
         }
 

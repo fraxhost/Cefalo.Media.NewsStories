@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DB.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repository.Interfaces;
@@ -11,6 +12,7 @@ using Service.Interfaces;
 
 namespace API.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     public class StoriesController : ControllerBase
@@ -22,6 +24,7 @@ namespace API.Controllers
             _storyService = storyService;
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet]
         public async Task<IActionResult> GetStories()
         {
@@ -30,6 +33,7 @@ namespace API.Controllers
             return Ok(stories);
         }
         
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet("{storyId:int}",Name = "GetStory")]
         public async Task<IActionResult> GetStory(int storyId)
         {
@@ -61,10 +65,10 @@ namespace API.Controllers
             return Ok();
         }
 
-        [HttpPatch("{storyId:int}")]
-        public async Task<IActionResult> UpdateStory(int storyId, [FromBody] UpdateStoryDto updateStoryDto)
+        [HttpPatch("{authorId:int}")]
+        public async Task<IActionResult> UpdateStory(int authorId, [FromBody] UpdateStoryDto updateStoryDto)
         {
-            if (updateStoryDto == null || storyId != updateStoryDto.Id)
+            if (updateStoryDto == null || authorId != updateStoryDto.AuthorId)
             {
                 return BadRequest(ModelState);
             }
@@ -78,15 +82,20 @@ namespace API.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{storyId:int}")]
-        public async Task<IActionResult> DeleteStory(int storyId)
+        [HttpDelete("{authorId:int}")]
+        public async Task<IActionResult> DeleteStory(int authorId, [FromBody] DeleteStoryDto deleteStoryDto)
         {
-            if (!await _storyService.StoryExists(storyId))
+            if (deleteStoryDto == null || authorId != deleteStoryDto.AuthorId)
+            {
+                return BadRequest(ModelState);
+            }
+            
+            if (!await _storyService.StoryExists(deleteStoryDto.Id))
             {
                 return NotFound();
             }
 
-            var story = await _storyService.GetStory(storyId);
+            var story = await _storyService.GetStory(deleteStoryDto.Id);
 
             if (!await _storyService.DeleteStory(story))
             {
