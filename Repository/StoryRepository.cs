@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DB;
 using DB.Models;
@@ -19,7 +20,7 @@ namespace Repository
         public async Task<IEnumerable<Story>> GetStories()
         {
             return await _dbContext.Stories
-                .AsNoTracking()
+                .Include(story => story.Author)
                 .ToListAsync();
         }
 

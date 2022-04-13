@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using DB.Models;
 using Service.DTOs;
+using Service.DTOs.User;
 
 namespace Service.Interfaces
 {

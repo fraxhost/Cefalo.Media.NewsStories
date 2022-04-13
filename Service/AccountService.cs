@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using DB.Models;
 using Repository.Interfaces;
 using Service.DTOs;
+using Service.DTOs.User;
 using Service.Interfaces;
 
 namespace Service

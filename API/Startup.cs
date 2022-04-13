@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using DB;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -58,6 +59,11 @@ namespace API
 
             services.AddControllers(options => { options.RespectBrowserAcceptHeader = true; });
             services.AddControllers().AddXmlDataContractSerializerFormatters();
+            services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+                options.JsonSerializerOptions.WriteIndented = true;
+            });
 
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "API", Version = "v1"}); });
         }

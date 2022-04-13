@@ -22,11 +22,15 @@ namespace Service
 
         public async Task<IEnumerable<Story>> GetStories()
         {
+            // TODO: convert to DTO
+            
             return await _storyRepository.GetStories();
         }
 
         public async Task<Story> GetStory(int id)
         {
+            // TODO: convert to DTO
+            
             return await _storyRepository.GetStory(id);
         }
 

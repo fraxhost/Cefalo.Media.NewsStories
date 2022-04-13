@@ -10,6 +10,6 @@ namespace DB.Models
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
 
-        public IEnumerable<Story> Stories { get; set; }
+        public virtual IEnumerable<Story> Stories { get; set; }
     }
 }

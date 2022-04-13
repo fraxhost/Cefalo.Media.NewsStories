@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Repository;
 using Service;
 using Service.DTOs;
+using Service.DTOs.User;
 using Service.Interfaces;
 
 namespace API.Controllers
