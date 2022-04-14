@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using DB.Models;
 using Repository.Interfaces;
+using Service.DTOs.Pagination;
 using Service.DTOs.Story;
 using Service.Interfaces;
 
@@ -20,18 +20,25 @@ namespace Service
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<Story>> GetStories()
+        public async Task<IEnumerable<StoryDto>> GetStories(StoryParameterDto storyParameterDto)
         {
-            // TODO: convert to DTO
+            var pageNumber = storyParameterDto.PageNumber;
+            var pageSize = storyParameterDto.PageSize;
+
+            var stories = await _storyRepository.GetStories(pageNumber, pageSize);
             
-            return await _storyRepository.GetStories();
+            var storiesDto = _mapper.Map<IEnumerable<StoryDto>>(stories);
+            
+            return storiesDto;
         }
 
-        public async Task<Story> GetStory(int id)
+        public async Task<StoryDto> GetStory(int id)
         {
-            // TODO: convert to DTO
+            var story = await _storyRepository.GetStory(id);
+
+            var storyDto = _mapper.Map<StoryDto>(story);
             
-            return await _storyRepository.GetStory(id);
+            return storyDto;
         }
 
         public async Task<bool> CreateStory(CreateStoryDto createStoryDto)
@@ -48,8 +55,10 @@ namespace Service
             return await _storyRepository.UpdateStory(story);
         }
 
-        public async Task<bool> DeleteStory(Story story)
+        public async Task<bool> DeleteStory(StoryDto storyDto)
         {
+            var story = _mapper.Map<Story>(storyDto);
+            
             return await _storyRepository.DeleteStory(story);
         }
 

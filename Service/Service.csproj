@@ -5,13 +5,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DB\DB.csproj" />
-      <ProjectReference Include="..\Repository\Repository.csproj" />
+        <ProjectReference Include="..\Repository\Repository.csproj"/>
+        <ProjectReference Include="..\DB\DB.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="AutoMapper" Version="11.0.1" />
-      <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+        <PackageReference Include="AutoMapper" Version="11.0.1"/>
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0"/>
     </ItemGroup>
 
 </Project>

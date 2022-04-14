@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repository.Interfaces;
+using Service.DTOs.Pagination;
 using Service.DTOs.Story;
 using Service.Interfaces;
 
@@ -23,17 +24,15 @@ namespace API.Controllers
         {
             _storyService = storyService;
         }
-
-        [Authorize(AuthenticationSchemes = "Bearer")]
+        
         [HttpGet]
-        public async Task<IActionResult> GetStories()
+        public async Task<IActionResult> GetStories([FromQuery] StoryParameterDto storyParameterDto)
         {
-            var stories = await _storyService.GetStories();
+            var stories = await _storyService.GetStories(storyParameterDto);
 
             return Ok(stories);
         }
         
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet("{storyId:int}",Name = "GetStory")]
         public async Task<IActionResult> GetStory(int storyId)
         {
@@ -47,7 +46,7 @@ namespace API.Controllers
             return Ok(story);
         }
         
-        
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPost]
         public async Task<IActionResult> CreateStory(CreateStoryDto createStoryDto)
         {
@@ -66,6 +65,7 @@ namespace API.Controllers
             return Ok();
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPatch("{authorId:int}")]
         public async Task<IActionResult> UpdateStory(int authorId, [FromBody] UpdateStoryDto updateStoryDto)
         {
@@ -83,6 +83,7 @@ namespace API.Controllers
             return NoContent();
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpDelete("{authorId:int}")]
         public async Task<IActionResult> DeleteStory(int authorId, [FromBody] DeleteStoryDto deleteStoryDto)
         {
