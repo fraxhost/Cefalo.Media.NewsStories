@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DB;
 using DB.Models;
@@ -16,10 +17,12 @@ namespace Repository
             _dbContext = dbContext;
         }
         
-        public async Task<IEnumerable<Story>> GetStories()
+        public async Task<IEnumerable<Story>> GetStories(int pageNumber, int pageSize)
         {
             return await _dbContext.Stories
-                .AsNoTracking()
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Include(story => story.Author)
                 .ToListAsync();
         }
 

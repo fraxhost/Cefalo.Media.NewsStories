@@ -2,6 +2,7 @@
 using DB.Models;
 using Service.DTOs;
 using Service.DTOs.Story;
+using Service.DTOs.User;
 
 namespace Service.Mappers
 {
@@ -11,6 +12,7 @@ namespace Service.Mappers
         {
             CreateMap<Story, CreateStoryDto>().ReverseMap();
             CreateMap<Story, UpdateStoryDto>().ReverseMap();
+            CreateMap<Story, StoryDto>().ReverseMap();
             CreateMap<User, LoginDto>().ReverseMap();
             CreateMap<User, RegisterDto>().ReverseMap();
             CreateMap<User, UserDto>().ReverseMap();

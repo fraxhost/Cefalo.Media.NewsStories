@@ -20,6 +20,14 @@ namespace DB.Configurations
                 .IsRequired();
             builder.Property(user => user.PasswordHash)
                 .IsRequired();
+
+
+            // Seeding
+            // builder.HasData(
+            //     new User
+            //     {
+            //     }
+            // );
         }
     }
 }
