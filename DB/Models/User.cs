@@ -1,15 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
 namespace DB.Models
 {
-    public class User
+    public class User : IdentityUser
     {
-        public int Id { get; set; }
-        public string UserId { get; set; }
         public string FullName { get; set; }
-        public byte[] PasswordHash { get; set; }
-        public byte[] PasswordSalt { get; set; }
-
-        public virtual IEnumerable<Story> Stories { get; set; }
+        public IEnumerable<Story> Stories { get; set; }
     }
 }
