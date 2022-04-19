@@ -1,17 +1,18 @@
 ﻿using System.Threading.Tasks;
 using DB.Models;
+using Microsoft.AspNetCore.Identity;
 using Service.DTOs;
 using Service.DTOs.User;
 
 namespace Service.Interfaces
 {
-    public interface IAccountService
+    public interface IAccountsService
     {
-        Task<User> Register(RegisterDto registerDto);
+        Task<IdentityResult> Register(RegisterDto registerDto);
         Task<User> Login(LoginDto loginDto);
         Task<User> GetUser(LoginDto loginDto);
         Task<bool> UserExists(RegisterDto registerDto);
         Task<bool> UserExists(LoginDto loginDto);
-        bool PasswordValidation(User user, LoginDto loginDto);
+        // bool PasswordValidation(ApplicationUser applicationUser, LoginDto loginDto);
     }
 }

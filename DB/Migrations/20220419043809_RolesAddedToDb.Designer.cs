@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DB.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220418105933_RolesAddedToDb")]
+    [Migration("20220419043809_RolesAddedToDb")]
     partial class RolesAddedToDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -147,15 +147,15 @@ namespace DB.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "6bc6a8a9-7a44-4a50-ae27-be24c9af4f59",
-                            ConcurrencyStamp = "4379f55c-dcd9-4c03-a788-3c458d5c6752",
+                            Id = "86dec1a6-8d2c-4ddb-a94d-9dadb8515bc6",
+                            ConcurrencyStamp = "863aa59a-963d-4ded-9c75-7089d44cf515",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "50f06bc0-3d0d-4356-80ec-261970652dc1",
-                            ConcurrencyStamp = "1ee129fc-8146-44b5-b6b1-615bdbfe0f23",
+                            Id = "b86d79d7-a138-402b-854b-d8bfa3229afe",
+                            ConcurrencyStamp = "374a779d-2088-4c78-bed0-2514a42d6988",
                             Name = "General",
                             NormalizedName = "GENERAL"
                         });
