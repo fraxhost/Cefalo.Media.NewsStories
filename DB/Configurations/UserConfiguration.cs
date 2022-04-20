@@ -9,25 +9,11 @@ namespace DB.Configurations
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.HasKey(user => user.Id);
-
-            builder.Property(user => user.Id)
-                .IsRequired();
-            builder.Property(user => user.UserId)
+            
+            builder.Property(user => user.UserName)
                 .IsRequired();
             builder.Property(user => user.FullName)
                 .IsRequired();
-            builder.Property(user => user.PasswordSalt)
-                .IsRequired();
-            builder.Property(user => user.PasswordHash)
-                .IsRequired();
-
-
-            // Seeding
-            // builder.HasData(
-            //     new User
-            //     {
-            //     }
-            // );
         }
     }
 }

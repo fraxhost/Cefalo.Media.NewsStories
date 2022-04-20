@@ -1,9 +1,7 @@
-﻿using DB.Models;
-
-namespace Service.Interfaces
+﻿namespace Service.Interfaces
 {
-    public interface ITokenService
+    public class ITokenService
     {
-        string CreateToken(User user);
+        
     }
 }

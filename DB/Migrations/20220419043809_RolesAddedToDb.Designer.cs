@@ -4,14 +4,16 @@ using DB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DB.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220419043809_RolesAddedToDb")]
+    partial class RolesAddedToDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -145,15 +147,15 @@ namespace DB.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d4d5b3c2-57bd-45a1-8b50-76e7c791b7e6",
-                            ConcurrencyStamp = "15d793c8-afe6-472b-9e16-ec0fca1c7fdb",
+                            Id = "86dec1a6-8d2c-4ddb-a94d-9dadb8515bc6",
+                            ConcurrencyStamp = "863aa59a-963d-4ded-9c75-7089d44cf515",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "64e5277e-4edd-4717-9f7c-abf0a03e33bd",
-                            ConcurrencyStamp = "c3c1000c-de1f-46d7-b614-95d906afd907",
+                            Id = "b86d79d7-a138-402b-854b-d8bfa3229afe",
+                            ConcurrencyStamp = "374a779d-2088-4c78-bed0-2514a42d6988",
                             Name = "General",
                             NormalizedName = "GENERAL"
                         });

@@ -16,52 +16,46 @@ namespace Repository
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<User>> GetUsers()
+        public async Task<IEnumerable<Author>> GetAuthors()
         {
-            return await _dbContext.Users
+            return await _dbContext.Authors
                 .ToListAsync();
         }
 
-        public async Task<User> GetUser(int userId)
+        public async Task<Author> GetAuthor(string userId)
         {
-            return await _dbContext.Users
+            return await _dbContext.Authors
                 .FirstOrDefaultAsync(user => user.Id == userId);
         }
 
-        public async Task<User> GetUser(string userId)
+        public async Task<bool> CreateAuthor(Author author)
         {
-            return await _dbContext.Users
-                .FirstOrDefaultAsync(user => user.UserId == userId);
-        }
-        
-        public async Task<bool> CreateUser(User user)
-        {
-            await _dbContext.Users
-                .AddAsync(user);
+            await _dbContext.Authors
+                .AddAsync(author);
 
             return await Save();
         }
 
-        public async Task<bool> UpdateUser(User user)
+        public async Task<bool> UpdateAuthor(Author author)
         {
-            _dbContext.Users
-                .Update(user);
+            _dbContext.Authors
+                .Update(author);
 
             return await Save();
         }
 
-        public async Task<bool> DeleteUser(User user)
+        public async Task<bool> DeleteAuthor(Author author)
         {
-            _dbContext.Users
-                .Remove(user);
+            _dbContext.Authors
+                .Remove(author);
 
             return await Save();
         }
 
         public async Task<bool> UserExists(string userId)
         {
-            return await _dbContext.Users
-                .AnyAsync(user => user.UserId.ToLower() == userId.ToLower());
+            return await _dbContext.Authors
+                .AnyAsync(user => user.NormalizedUserName.ToLower() == userId.ToLower());
         }
         
         public async Task<bool> Save()

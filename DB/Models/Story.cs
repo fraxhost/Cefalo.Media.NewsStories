@@ -10,7 +10,7 @@ namespace DB.Models
         public DateTime PublishedDate { get; set; }
 
         
-        public virtual int AuthorId { get; set; }
+        public virtual string AuthorId { get; set; }
         public virtual User Author { get; set; }
     }
 }

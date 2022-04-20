@@ -4,14 +4,13 @@ using DB.Models;
 
 namespace Repository.Interfaces
 {
-    public interface IUserRepository
+    public interface IAuthorRepository
     {
-        Task<IEnumerable<User>> GetUsers();
-        Task<User> GetUser(int userId);
-        Task<User> GetUser(string userId);
-        Task<bool> CreateUser(User user);
-        Task<bool> UpdateUser(User user);
-        Task<bool> DeleteUser(User user);
+        Task<IEnumerable<Author>> GetAuthors();
+        Task<Author> GetAuthor(string userId);
+        Task<bool> CreateAuthor(Author author);
+        Task<bool> UpdateAuthor(Author author);
+        Task<bool> DeleteAuthor(Author author);
         Task<bool> UserExists(string userId);
         Task<bool> Save();
     }
