@@ -1,6 +1,6 @@
 ﻿namespace Service.DTOs.User
 {
-    public class AuthorDto
+    public class UserDto
     {
         public int Id { get; set; }
         public string UserId { get; set; }

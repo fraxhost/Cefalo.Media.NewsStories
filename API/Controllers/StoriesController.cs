@@ -1,19 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using DB.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Repository.Interfaces;
 using Service.DTOs.Pagination;
 using Service.DTOs.Story;
 using Service.Interfaces;
 
 namespace API.Controllers
 {
-    
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin, General")]
     [Route("api/[controller]")]
     [ApiController]
     public class StoriesController : ControllerBase
@@ -25,6 +20,8 @@ namespace API.Controllers
             _storyService = storyService;
         }
         
+        
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetStories([FromQuery] StoryParameterDto storyParameterDto)
         {
@@ -33,6 +30,8 @@ namespace API.Controllers
             return Ok(stories);
         }
         
+        
+        [AllowAnonymous]
         [HttpGet("{storyId:int}",Name = "GetStory")]
         public async Task<IActionResult> GetStory(int storyId)
         {
@@ -46,7 +45,7 @@ namespace API.Controllers
             return Ok(story);
         }
         
-        [Authorize(AuthenticationSchemes = "Bearer")]
+        
         [HttpPost]
         public async Task<IActionResult> CreateStory(CreateStoryDto createStoryDto)
         {
@@ -62,18 +61,24 @@ namespace API.Controllers
             }
 
             // TODO: return 201 - Created At Action / route OR return 201 - Send Created Object
-            return Ok();
+            return StatusCode(201);
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
-        [HttpPatch("{authorId:int}")]
-        public async Task<IActionResult> UpdateStory(int authorId, [FromBody] UpdateStoryDto updateStoryDto)
+        
+        [HttpPatch]
+        public async Task<IActionResult> UpdateStory([FromBody] UpdateStoryDto updateStoryDto)
         {
-            if (updateStoryDto == null || authorId != updateStoryDto.AuthorId)
+            if (updateStoryDto == null)
             {
                 return BadRequest(ModelState);
             }
 
+            var userId = HttpContext.User.FindFirstValue("Id");
+            if (userId != updateStoryDto.AuthorId && !HttpContext.User.IsInRole("Admin"))
+            {
+                return Unauthorized();
+            }
+            
             if (!await _storyService.UpdateStory(updateStoryDto))
             {
                 ModelState.AddModelError("", $"Something went wrong when updating the record {updateStoryDto.Id}");
@@ -83,13 +88,19 @@ namespace API.Controllers
             return NoContent();
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
-        [HttpDelete("{authorId:int}")]
-        public async Task<IActionResult> DeleteStory(int authorId, [FromBody] DeleteStoryDto deleteStoryDto)
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteStory([FromBody] DeleteStoryDto deleteStoryDto)
         {
-            if (deleteStoryDto == null || authorId != deleteStoryDto.AuthorId)
+            if (deleteStoryDto == null)
             {
                 return BadRequest(ModelState);
+            }
+
+            var userId = HttpContext.User.FindFirstValue("Id");
+            if (userId != deleteStoryDto.AuthorId && !HttpContext.User.IsInRole("Admin"))
+            {
+                return Unauthorized();
             }
             
             if (!await _storyService.StoryExists(deleteStoryDto.Id))

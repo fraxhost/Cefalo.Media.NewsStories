@@ -15,7 +15,7 @@ namespace Service.Mappers
             CreateMap<Story, StoryDto>().ReverseMap();
             CreateMap<User, LoginDto>().ReverseMap();
             CreateMap<User, RegisterDto>().ReverseMap();
-            CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<User, AuthenticationDto>().ReverseMap();
         }
     }
 }

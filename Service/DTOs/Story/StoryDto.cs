@@ -9,6 +9,6 @@ namespace Service.DTOs.Story
         public string Body { get; set; }
         public DateTime PublishedDate { get; set; }
 
-        public int AuthorId { get; set; }
+        public string AuthorId { get; set; }
     }
 }

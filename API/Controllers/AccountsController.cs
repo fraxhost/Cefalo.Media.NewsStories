@@ -1,80 +1,126 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
-using DB;
-using DB.Models;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
-using Repository;
-using Service;
-using Service.DTOs;
 using Service.DTOs.User;
 using Service.Interfaces;
 
 namespace API.Controllers
 {
+    [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountsController : ControllerBase
     {
-        private readonly IAccountService _accountService;
+        private readonly IAccountsService _accountsService;
         private readonly ITokenService _tokenService;
 
-        public AccountsController(IAccountService accountService, ITokenService tokenService)
+        
+        public AccountsController(IAccountsService accountsService, ITokenService tokenService)
         {
-            _accountService = accountService;
+            _accountsService = accountsService;
             _tokenService = tokenService;
         }
 
+        
+        // TODO: Replace all model classes with DTOs in controller 
+        
+        
         [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
+        public async Task<IActionResult> Register(RegisterDto registerDto)
         {
-            if (await _accountService.UserExists(registerDto))
+            if (!ModelState.IsValid)
             {
-                return BadRequest("UserId is taken!");
+                return BadRequest();
             }
-
-            var user = await _accountService.Register(registerDto);
-
-            if (user == null)
-            {
-                return StatusCode(500);
-            }
-
-            var token = _tokenService.CreateToken(user);
             
-            return new UserDto
+            var userCreated = await _accountsService.CreateUser(registerDto);
+
+            if (!userCreated.identityResult.Succeeded)
             {
-                UserId = user.UserId,
-                Token = token
+                foreach (var error in userCreated.identityResult.Errors)
+                {
+                    ModelState.AddModelError("Error", error.Description);
+                }
+
+                return StatusCode(500, ModelState);
+            }
+                
+            var roleAssigned = await _accountsService.AssignRole(userCreated.user, registerDto);
+                
+            if (!roleAssigned.Succeeded)
+            {
+                foreach (var error in roleAssigned.Errors)
+                {
+                    ModelState.AddModelError("Error", error.Description);
+                }
+
+                return StatusCode(500, "Role assigning failed!");
+            }
+            
+            await _accountsService.SignIn(userCreated.user, false);
+
+            var userDto = new AuthenticationDto
+            {
+                UserId = userCreated.user.UserName,
+                Token = await _tokenService.CreateToken(userCreated.user),
             };
+            
+            return StatusCode(201, userDto);
         }
 
+        
         [HttpPost("login")]
-        public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
+        public async Task<ActionResult<AuthenticationDto>> Login([FromBody] LoginDto loginDto)
         {
-            var user = await _accountService.GetUser(loginDto);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var user = await _accountsService.FindUserByName(loginDto);
 
             if (user == null)
             {
-                return Unauthorized("Invalid username!");
+                return StatusCode(404, "Invalid username");
             }
 
-            if (!_accountService.PasswordValidation(user, loginDto))
+            if (await _accountsService.CheckPassword(user, loginDto))
             {
-                return Unauthorized("Invalid password!");
+                return Ok(new AuthenticationDto
+                {
+                    UserId = user.UserName,
+                    Token = await _tokenService.CreateToken(user)
+                });
             }
-            
-            return new UserDto
+
+            return StatusCode(404, "Invalid password");
+        }
+
+        
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var user = await _accountsService.FindUserById(id);
+
+            if (user == null)
             {
-                UserId = user.UserId,
-                Token = _tokenService.CreateToken(user)
-            };
+                return NotFound();
+            }
+
+            var result = await _accountsService.DeleteUser(user);
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
         }
     }
 }
