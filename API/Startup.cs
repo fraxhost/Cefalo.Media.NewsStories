@@ -1,9 +1,10 @@
 using System.Text;
-using System.Text.Json.Serialization;
 using DB;
+using DB.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,6 +36,16 @@ namespace API
                 options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"));
             });
 
+            services.AddIdentity<User, IdentityRole>(options =>
+                {
+                    options.Password.RequiredLength = 8;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireDigit = false;
+                    options.Password.RequireUppercase = false;
+                })
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
             // JWT configuration
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -51,7 +62,7 @@ namespace API
             // Dependency Injection
             services.AddScoped<IStoryRepository, StoryRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IAccountsService, AccountsService>();
             services.AddScoped<IStoryService, StoryService>();
             services.AddScoped<ITokenService, TokenService>();
 

@@ -16,45 +16,45 @@ namespace Repository
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<Author>> GetAuthors()
+        public async Task<IEnumerable<User>> GetUsers()
         {
-            return await _dbContext.Authors
+            return await _dbContext.Users
                 .ToListAsync();
         }
 
-        public async Task<Author> GetAuthor(string userId)
+        public async Task<User> GetUser(string userId)
         {
-            return await _dbContext.Authors
+            return await _dbContext.Users
                 .FirstOrDefaultAsync(user => user.Id == userId);
         }
 
-        public async Task<bool> CreateAuthor(Author author)
+        public async Task<bool> CreateUser(User user)
         {
-            await _dbContext.Authors
-                .AddAsync(author);
+            await _dbContext.Users
+                .AddAsync(user);
 
             return await Save();
         }
 
-        public async Task<bool> UpdateAuthor(Author author)
+        public async Task<bool> UpdateUser(User user)
         {
-            _dbContext.Authors
-                .Update(author);
+            _dbContext.Users
+                .Update(user);
 
             return await Save();
         }
 
-        public async Task<bool> DeleteAuthor(Author author)
+        public async Task<bool> DeleteAuthor(User user)
         {
-            _dbContext.Authors
-                .Remove(author);
+            _dbContext.Users
+                .Remove(user);
 
             return await Save();
         }
 
         public async Task<bool> UserExists(string userId)
         {
-            return await _dbContext.Authors
+            return await _dbContext.Users
                 .AnyAsync(user => user.NormalizedUserName.ToLower() == userId.ToLower());
         }
         
