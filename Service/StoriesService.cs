@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using DB.Models;
@@ -20,51 +22,123 @@ namespace Service
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<StoryDto>> GetStories(StoryParameterDto storyParameterDto)
+
+        public async Task<IEnumerable<StoryToReturnDto>> GetStories(StoryParameterDto storyParameterDto)
         {
             var pageNumber = storyParameterDto.PageNumber;
             var pageSize = storyParameterDto.PageSize;
 
             var stories = await _storyRepository.GetStories(pageNumber, pageSize);
-            
-            var storiesDto = _mapper.Map<IEnumerable<StoryDto>>(stories);
-            
+
+            // var storiesDto = _mapper.Map<IEnumerable<StoryToReturnDto>>(stories);
+
+            var storiesDto = new List<StoryToReturnDto>();
+
+            foreach (var story in stories)
+            {
+                var storyDto = new StoryToReturnDto
+                {
+                    Id = story.Id,
+                    AuthorId = story.AuthorId,
+                    AuthorName = story.Author.FullName,
+                    Body = story.Body,
+                    PublishedDate = story.PublishedDate,
+                    Title = story.Title
+                };
+
+                storiesDto.Add(storyDto);
+            }
+
             return storiesDto;
         }
 
-        public async Task<StoryDto> GetStory(int id)
+        public async Task<PaginationToReturnDto> GetPaginatedStories(StoryParameterDto storyParameterDto)
+        {
+            var pageNumber = storyParameterDto.PageNumber;
+            var pageSize = storyParameterDto.PageSize;
+
+            var stories = await _storyRepository.GetStories(pageNumber, pageSize);
+
+            // var storiesDto = _mapper.Map<IEnumerable<StoryToReturnDto>>(stories);
+
+            var storiesDto = new List<StoryToReturnDto>();
+
+            foreach (var story in stories)
+            {
+                var storyDto = new StoryToReturnDto
+                {
+                    Id = story.Id,
+                    AuthorId = story.AuthorId,
+                    AuthorName = story.Author.FullName,
+                    Body = story.Body,
+                    PublishedDate = story.PublishedDate,
+                    Title = story.Title
+                };
+
+                storiesDto.Add(storyDto);
+            }
+
+            var totalStories = await _storyRepository.GetTotalStories();
+            var totalPages = (int) Math.Ceiling((decimal) totalStories / pageSize);
+
+            return new PaginationToReturnDto
+            {
+                Data = storiesDto,
+                Count = totalStories,
+                TotalPage = totalPages,
+                CurrentPage = pageNumber
+            };
+        }
+
+        public async Task<StoryToReturnDto> GetStory(int id)
         {
             var story = await _storyRepository.GetStory(id);
 
-            var storyDto = _mapper.Map<StoryDto>(story);
-            
+            var storyDto = _mapper.Map<StoryToReturnDto>(story);
+
             return storyDto;
         }
 
-        public async Task<bool> CreateStory(CreateStoryDto createStoryDto)
+
+        public async Task<bool> CreateStory(CreateStoryDto createStoryDto, string userId)
         {
             var story = _mapper.Map<Story>(createStoryDto);
+            story.AuthorId = userId;
 
             return await _storyRepository.CreateStory(story);
         }
 
-        public async Task<bool> UpdateStory(UpdateStoryDto updateStoryDto)
+
+        public async Task<bool> UpdateStory(int storyId, string authorId, UpdateStoryDto updateStoryDto)
         {
             var story = _mapper.Map<Story>(updateStoryDto);
+
+            story.Id = storyId;
+            story.AuthorId = authorId;
 
             return await _storyRepository.UpdateStory(story);
         }
 
-        public async Task<bool> DeleteStory(StoryDto storyDto)
+
+        public async Task<bool> DeleteStory(StoryToReturnDto storyToReturnDto)
         {
-            var story = _mapper.Map<Story>(storyDto);
-            
+            var story = _mapper.Map<Story>(storyToReturnDto);
+
             return await _storyRepository.DeleteStory(story);
         }
+
 
         public async Task<bool> StoryExists(int storyId)
         {
             return await _storyRepository.StoryExists(storyId);
+        }
+
+
+        public async Task<string> GetAuthorId(int storyId)
+        {
+            var story = await _storyRepository.GetStory(storyId);
+
+            return story.AuthorId;
         }
     }
 }

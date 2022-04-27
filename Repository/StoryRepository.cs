@@ -26,6 +26,11 @@ namespace Repository
                 .ToListAsync();
         }
 
+        public async Task<int> GetTotalStories()
+        {
+            return await _dbContext.Stories.CountAsync();
+        }
+
         public async Task<Story> GetStory(int storyId)
         {
             return await _dbContext.Stories

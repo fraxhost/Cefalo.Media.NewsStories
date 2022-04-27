@@ -25,9 +25,9 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetStories([FromQuery] StoryParameterDto storyParameterDto)
         {
-            var stories = await _storyService.GetStories(storyParameterDto);
+            var paginatedStories = await _storyService.GetPaginatedStories(storyParameterDto);
 
-            return Ok(stories);
+            return Ok(paginatedStories);
         }
         
         
@@ -54,7 +54,8 @@ namespace API.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (!await _storyService.CreateStory(createStoryDto))
+            var userId = HttpContext.User.FindFirstValue("Id");
+            if (!await _storyService.CreateStory(createStoryDto, userId))
             {
                 ModelState.AddModelError("", "Something went wrong while saving!");
                 return StatusCode(500, ModelState);
@@ -65,23 +66,25 @@ namespace API.Controllers
         }
 
         
-        [HttpPatch]
-        public async Task<IActionResult> UpdateStory([FromBody] UpdateStoryDto updateStoryDto)
+        [HttpPatch("{storyId:int}")]
+        public async Task<IActionResult> UpdateStory(int storyId, [FromBody] UpdateStoryDto updateStoryDto)
         {
             if (updateStoryDto == null)
             {
                 return BadRequest(ModelState);
             }
 
+            var authorId = await _storyService.GetAuthorId(storyId);
+            
             var userId = HttpContext.User.FindFirstValue("Id");
-            if (userId != updateStoryDto.AuthorId && !HttpContext.User.IsInRole("Admin"))
+            if (userId != authorId && !HttpContext.User.IsInRole("Admin"))
             {
                 return Unauthorized();
             }
             
-            if (!await _storyService.UpdateStory(updateStoryDto))
+            if (!await _storyService.UpdateStory(storyId, authorId, updateStoryDto))
             {
-                ModelState.AddModelError("", $"Something went wrong when updating the record {updateStoryDto.Id}");
+                ModelState.AddModelError("", $"Something went wrong when updating the record");
                 return StatusCode(500, ModelState);
             }
 
@@ -89,26 +92,23 @@ namespace API.Controllers
         }
 
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteStory([FromBody] DeleteStoryDto deleteStoryDto)
+        [HttpDelete("{storyId:int}")]
+        public async Task<IActionResult> DeleteStory(int storyId)
         {
-            if (deleteStoryDto == null)
-            {
-                return BadRequest(ModelState);
-            }
-
+            var authorId = await _storyService.GetAuthorId(storyId);
+            
             var userId = HttpContext.User.FindFirstValue("Id");
-            if (userId != deleteStoryDto.AuthorId && !HttpContext.User.IsInRole("Admin"))
+            if (userId != authorId && !HttpContext.User.IsInRole("Admin"))
             {
                 return Unauthorized();
             }
             
-            if (!await _storyService.StoryExists(deleteStoryDto.Id))
+            if (!await _storyService.StoryExists(storyId))
             {
                 return NotFound();
             }
 
-            var story = await _storyService.GetStory(deleteStoryDto.Id);
+            var story = await _storyService.GetStory(storyId);
 
             if (!await _storyService.DeleteStory(story))
             {
