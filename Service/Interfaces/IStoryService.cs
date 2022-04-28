@@ -17,5 +17,6 @@ namespace Service.Interfaces
         Task<bool> StoryExists(int storyId);
         Task<string> GetAuthorId(int storyId);
         Task<bool> UpdateStory(int storyId, string authorId, UpdateStoryDto updateStoryDto);
+        Task<object> GetPaginatedSearchedStories(SearchParameterDto searchParameterDto);
     }
 }

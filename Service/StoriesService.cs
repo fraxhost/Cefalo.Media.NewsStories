@@ -57,7 +57,9 @@ namespace Service
             var pageNumber = storyParameterDto.PageNumber;
             var pageSize = storyParameterDto.PageSize;
 
-            var stories = await _storyRepository.GetStories(pageNumber, pageSize);
+            var stories = String.IsNullOrEmpty(storyParameterDto.AuthorId)
+                ? await _storyRepository.GetStories(pageNumber, pageSize)
+                : await _storyRepository.GetStoriesByAuthor(pageNumber, pageSize, storyParameterDto.AuthorId);
 
             // var storiesDto = _mapper.Map<IEnumerable<StoryToReturnDto>>(stories);
 
@@ -78,7 +80,60 @@ namespace Service
                 storiesDto.Add(storyDto);
             }
 
-            var totalStories = await _storyRepository.GetTotalStories();
+            var totalStories = String.IsNullOrEmpty(storyParameterDto.AuthorId)
+                ? await _storyRepository.GetTotalStories()
+                : await _storyRepository.GetTotalStoriesByAuthor(storyParameterDto.AuthorId);
+
+            var totalPages = (int) Math.Ceiling((decimal) totalStories / pageSize);
+
+            return new PaginationToReturnDto
+            {
+                Data = storiesDto,
+                Count = totalStories,
+                TotalPage = totalPages,
+                CurrentPage = pageNumber
+            };
+        }
+
+        public async Task<object> GetPaginatedSearchedStories(SearchParameterDto searchParameterDto)
+        {
+            if (String.IsNullOrEmpty(searchParameterDto.SearchString) ||
+                String.IsNullOrWhiteSpace(searchParameterDto.SearchString))
+            {
+                return new PaginationToReturnDto
+                {
+                    Data = Array.Empty<StoryToReturnDto>(),
+                    Count = 0,
+                    TotalPage = 0,
+                    CurrentPage = 1
+                };
+            }
+
+            var pageNumber = searchParameterDto.PageNumber;
+            var pageSize = searchParameterDto.PageSize;
+
+            var stories =
+                await _storyRepository.GetStoriesBySearch(pageNumber, pageSize, searchParameterDto.SearchString);
+
+            var storiesDto = new List<StoryToReturnDto>();
+
+            foreach (var story in stories)
+            {
+                var storyDto = new StoryToReturnDto
+                {
+                    Id = story.Id,
+                    AuthorId = story.AuthorId,
+                    AuthorName = story.Author.FullName,
+                    Body = story.Body,
+                    PublishedDate = story.PublishedDate,
+                    Title = story.Title
+                };
+
+                storiesDto.Add(storyDto);
+            }
+
+            var totalStories = await _storyRepository.GetTotalStoriesBySearch(searchParameterDto.SearchString);
+
             var totalPages = (int) Math.Ceiling((decimal) totalStories / pageSize);
 
             return new PaginationToReturnDto

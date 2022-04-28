@@ -45,6 +45,14 @@ namespace API.Controllers
             return Ok(story);
         }
         
+        [AllowAnonymous]
+        [HttpGet("search", Name = "SearchStory")]
+        public async Task<IActionResult> SearchStories([FromQuery] SearchParameterDto searchParameterDto)
+        {
+            var paginatedSearchedStories = await _storyService.GetPaginatedSearchedStories(searchParameterDto);
+
+            return Ok(paginatedSearchedStories);
+        }
         
         [HttpPost]
         public async Task<IActionResult> CreateStory(CreateStoryDto createStoryDto)
