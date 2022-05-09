@@ -38,11 +38,15 @@ namespace Repository
 
         public async Task<IEnumerable<Story>> GetStoriesBySearch(int pageNumber, int pageSize, string searchString)
         {
+            int numericValue;
+            bool isNumber = int.TryParse(searchString, out numericValue);
+            
+                
             return await _dbContext.Stories
                 .Where(
                     story =>
                         story.AuthorId.Contains(searchString) ||
-                        story.Id.Equals(searchString) ||
+                        (isNumber ? story.Id.Equals(numericValue) : false) ||
                         story.Title.Contains(searchString) ||
                         story.Body.Contains(searchString) ||
                         story.PublishedDate.Equals(searchString) ||
@@ -69,10 +73,13 @@ namespace Repository
 
         public async Task<int> GetTotalStoriesBySearch(string searchString)
         {
+            int numericValue;
+            bool isNumber = int.TryParse(searchString, out numericValue);
+            
             return await _dbContext.Stories
                 .Where(
                     story => story.AuthorId.Contains(searchString) ||
-                             story.Id.Equals(searchString) ||
+                             (isNumber ? story.Id.Equals(numericValue) : false) ||
                              story.Title.Contains(searchString) ||
                              story.Body.Contains(searchString) ||
                              story.PublishedDate.Equals(searchString) ||

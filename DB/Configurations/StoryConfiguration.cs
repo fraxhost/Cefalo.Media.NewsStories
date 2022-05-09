@@ -26,7 +26,7 @@ namespace DB.Configurations
             // Seeding
             // builder.HasData(
             //     new Story
-            //     {
+            //     { 
             //         Id = 1,
             //         Title = "Story 1",
             //         Body = "Body of Story 1",
