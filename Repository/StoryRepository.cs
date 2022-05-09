@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DB;
@@ -39,7 +40,9 @@ namespace Repository
         public async Task<IEnumerable<Story>> GetStoriesBySearch(int pageNumber, int pageSize, string searchString)
         {
             int numericValue;
+            DateTime dateTime;
             bool isNumber = int.TryParse(searchString, out numericValue);
+            bool isDateTime = DateTime.TryParse(searchString, out dateTime);
             
             return await _dbContext.Stories
                 .Where(
@@ -48,7 +51,7 @@ namespace Repository
                         (isNumber ? story.Id.Equals(numericValue) : false) ||
                         story.Title.Contains(searchString) ||
                         story.Body.Contains(searchString) ||
-                        story.PublishedDate.Equals(searchString) ||
+                        (isDateTime ? story.PublishedDate.Date.Equals(dateTime) : false) ||
                         story.Author.FullName.Contains(searchString) ||
                         story.Author.NormalizedUserName.Contains(searchString.ToUpper())
                 )
@@ -56,6 +59,25 @@ namespace Repository
                 .Take(pageSize)
                 .Include(story => story.Author)
                 .ToListAsync();
+        }
+        
+        public async Task<int> GetTotalStoriesBySearch(string searchString)
+        {
+            int numericValue;
+            DateTime dateTime;
+            bool isNumber = int.TryParse(searchString, out numericValue);
+            bool isDateTime = DateTime.TryParse(searchString, out dateTime);
+            
+            return await _dbContext.Stories
+                .Where(
+                    story => story.AuthorId.Contains(searchString) ||
+                             (isNumber ? story.Id.Equals(numericValue) : false) ||
+                             story.Title.Contains(searchString) ||
+                             story.Body.Contains(searchString) ||
+                             (isDateTime ? story.PublishedDate.Date.Equals(dateTime) : false) ||
+                             story.Author.FullName.Contains(searchString) ||
+                             story.Author.NormalizedUserName.Contains(searchString.ToUpper())
+                ).CountAsync();
         }
 
         public async Task<int> GetTotalStories()
@@ -70,22 +92,7 @@ namespace Repository
                 .CountAsync();
         }
 
-        public async Task<int> GetTotalStoriesBySearch(string searchString)
-        {
-            int numericValue;
-            bool isNumber = int.TryParse(searchString, out numericValue);
-            
-            return await _dbContext.Stories
-                .Where(
-                    story => story.AuthorId.Contains(searchString) ||
-                             (isNumber ? story.Id.Equals(numericValue) : false) ||
-                             story.Title.Contains(searchString) ||
-                             story.Body.Contains(searchString) ||
-                             story.PublishedDate.Equals(searchString) ||
-                             story.Author.FullName.Contains(searchString) ||
-                             story.Author.NormalizedUserName.Contains(searchString.ToUpper())
-                ).CountAsync();
-        }
+       
 
         public async Task<Story> GetStory(int storyId)
         {
