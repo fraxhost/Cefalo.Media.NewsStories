@@ -2,6 +2,6 @@
 {
     public class StoryParameterDto : RequestParameterDto
     {
-        
+        public string AuthorId { get; set; }
     }
 }

@@ -9,11 +9,14 @@ namespace Service.Interfaces
 {
     public interface IStoryService
     {
-        Task<IEnumerable<StoryDto>> GetStories(StoryParameterDto storyParameterDto);
-        Task<StoryDto> GetStory(int id);
-        Task<bool> CreateStory(CreateStoryDto createStoryDto);
-        Task<bool> UpdateStory(UpdateStoryDto updateStoryDto);
-        Task<bool> DeleteStory(StoryDto storyDto);
+        Task<IEnumerable<StoryToReturnDto>> GetStories(StoryParameterDto storyParameterDto);
+        Task<PaginationToReturnDto> GetPaginatedStories(StoryParameterDto storyParameterDto);
+        Task<StoryToReturnDto> GetStory(int id);
+        Task<bool> CreateStory(CreateStoryDto createStoryDto, string userId);
+        Task<bool> DeleteStory(StoryToReturnDto storyToReturnDto);
         Task<bool> StoryExists(int storyId);
+        Task<string> GetAuthorId(int storyId);
+        Task<bool> UpdateStory(int storyId, string authorId, UpdateStoryDto updateStoryDto);
+        Task<object> GetPaginatedSearchedStories(SearchParameterDto searchParameterDto);
     }
 }

@@ -59,6 +59,16 @@ namespace API
                     };
                 });
 
+            // CORS
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy",
+                    policy =>
+                    {
+                        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+                    });
+            });
+            
             // Dependency Injection
             services.AddScoped<IStoryRepository, StoryRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
@@ -87,6 +97,7 @@ namespace API
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();
+            app.UseCors("CorsPolicy");
             app.UseAuthorization();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }

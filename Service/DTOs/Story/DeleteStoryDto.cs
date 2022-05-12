@@ -7,7 +7,5 @@ namespace Service.DTOs.Story
     {
         [Required]
         public int Id { get; set; }
-        [Required]
-        public string AuthorId { get; set; }
     }
 }

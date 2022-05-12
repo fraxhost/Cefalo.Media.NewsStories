@@ -12,7 +12,7 @@ namespace Service.Mappers
         {
             CreateMap<Story, CreateStoryDto>().ReverseMap();
             CreateMap<Story, UpdateStoryDto>().ReverseMap();
-            CreateMap<Story, StoryDto>().ReverseMap();
+            CreateMap<Story, StoryToReturnDto>().ReverseMap();
             CreateMap<User, LoginDto>().ReverseMap();
             CreateMap<User, RegisterDto>().ReverseMap();
             CreateMap<User, AuthenticationDto>().ReverseMap();
