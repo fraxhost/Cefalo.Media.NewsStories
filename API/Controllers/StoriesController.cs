@@ -35,7 +35,7 @@ namespace API.Controllers
         [HttpGet("{storyId:int}",Name = "GetStory")]
         public async Task<IActionResult> GetStory(int storyId)
         {
-            var story = await _storyService.GetStory(storyId);
+            var story = await _storyService.GetStoryById(storyId);
         
             if (story == null)
             {
@@ -116,7 +116,7 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            var story = await _storyService.GetStory(storyId);
+            var story = await _storyService.GetStoryById(storyId);
 
             if (!await _storyService.DeleteStory(story))
             {

@@ -88,7 +88,7 @@ namespace Repository
                 ).CountAsync();
         }
 
-        public async Task<Story> GetStory(int storyId)
+        public async Task<Story> GetStoryById(int storyId)
         {
             return await _dbContext.Stories
                 .AsNoTracking()

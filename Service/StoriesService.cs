@@ -23,34 +23,34 @@ namespace Service
         }
 
 
-        public async Task<IEnumerable<StoryToReturnDto>> GetStories(StoryParameterDto storyParameterDto)
-        {
-            var pageNumber = storyParameterDto.PageNumber;
-            var pageSize = storyParameterDto.PageSize;
-
-            var stories = await _storyRepository.GetStories(pageNumber, pageSize);
-
-            // var storiesDto = _mapper.Map<IEnumerable<StoryToReturnDto>>(stories);
-
-            var storiesDto = new List<StoryToReturnDto>();
-
-            foreach (var story in stories)
-            {
-                var storyDto = new StoryToReturnDto
-                {
-                    Id = story.Id,
-                    AuthorId = story.AuthorId,
-                    AuthorName = story.Author.FullName,
-                    Body = story.Body,
-                    PublishedDate = story.PublishedDate,
-                    Title = story.Title
-                };
-
-                storiesDto.Add(storyDto);
-            }
-
-            return storiesDto;
-        }
+        // public async Task<IEnumerable<StoryToReturnDto>> GetStories(StoryParameterDto storyParameterDto)
+        // {
+        //     var pageNumber = storyParameterDto.PageNumber;
+        //     var pageSize = storyParameterDto.PageSize;
+        //
+        //     var stories = await _storyRepository.GetStories(pageNumber, pageSize);
+        //
+        //     // var storiesDto = _mapper.Map<IEnumerable<StoryToReturnDto>>(stories);
+        //
+        //     var storiesDto = new List<StoryToReturnDto>();
+        //
+        //     foreach (var story in stories)
+        //     {
+        //         var storyDto = new StoryToReturnDto
+        //         {
+        //             Id = story.Id,
+        //             AuthorId = story.AuthorId,
+        //             AuthorName = story.Author.FullName,
+        //             Body = story.Body,
+        //             PublishedDate = story.PublishedDate,
+        //             Title = story.Title
+        //         };
+        //
+        //         storiesDto.Add(storyDto);
+        //     }
+        //
+        //     return storiesDto;
+        // }
 
         public async Task<PaginationToReturnDto> GetPaginatedStories(StoryParameterDto storyParameterDto)
         {
@@ -145,9 +145,9 @@ namespace Service
             };
         }
 
-        public async Task<StoryToReturnDto> GetStory(int id)
+        public async Task<StoryToReturnDto> GetStoryById(int id)
         {
-            var story = await _storyRepository.GetStory(id);
+            var story = await _storyRepository.GetStoryById(id);
 
             var storyDto = _mapper.Map<StoryToReturnDto>(story);
 
@@ -191,7 +191,7 @@ namespace Service
 
         public async Task<string> GetAuthorId(int storyId)
         {
-            var story = await _storyRepository.GetStory(storyId);
+            var story = await _storyRepository.GetStoryById(storyId);
 
             return story.AuthorId;
         }

@@ -9,9 +9,9 @@ namespace Service.Interfaces
 {
     public interface IStoryService
     {
-        Task<IEnumerable<StoryToReturnDto>> GetStories(StoryParameterDto storyParameterDto);
+        // Task<IEnumerable<StoryToReturnDto>> GetStories(StoryParameterDto storyParameterDto);
         Task<PaginationToReturnDto> GetPaginatedStories(StoryParameterDto storyParameterDto);
-        Task<StoryToReturnDto> GetStory(int id);
+        Task<StoryToReturnDto> GetStoryById(int id);
         Task<bool> CreateStory(CreateStoryDto createStoryDto, string userId);
         Task<bool> DeleteStory(StoryToReturnDto storyToReturnDto);
         Task<bool> StoryExists(int storyId);

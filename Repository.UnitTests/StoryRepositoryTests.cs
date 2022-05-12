@@ -11,7 +11,7 @@ namespace Repository.UnitTests
     {
         private readonly DbContextOptions<ApplicationDbContext> _options;
         private readonly ApplicationDbContext _storiesContext;
-        private readonly StoryRepository _repositoryUnderTest;
+        private readonly StoryRepository _sut;
         
         public StoryRepositoryTests()
         {
@@ -20,33 +20,39 @@ namespace Repository.UnitTests
                 .Options;
             
             _storiesContext = new ApplicationDbContext(_options);
-            _repositoryUnderTest = new StoryRepository(_storiesContext);
+            _sut = new StoryRepository(_storiesContext);
         }
 
         
         
         [Theory]
         [InlineData("author_id_1")]
+        [InlineData("author_id_2")]
+        [InlineData("author_id_3")]
+        [InlineData("author_id_4")]
+        [InlineData("author_id_5")]
+        [InlineData("author_id_6")]
+        [InlineData("author_id_7")]
         public async Task GetTotalStoriesByAuthor_WhenAuthorIsFound_ReturnsTotalStoriesOfAuthor(string authorId)
         {
             // Arrange
             var newStory = new Story()
             {
-                Id = 1,
                 Title = "Story 1",
                 Body = "Body of Story 1",
                 PublishedDate = Convert.ToDateTime("2021-06-24T04:45:23.2321927Z"),
                 AuthorId = authorId
             };
             
-            await _repositoryUnderTest.CreateStory(newStory);
+            await _sut.CreateStory(newStory);
             
             // Act
-            var totalStories = await _repositoryUnderTest.GetTotalStoriesByAuthor(authorId);
+            var totalStories = await _sut.GetTotalStoriesByAuthor(authorId);
             
             // Assert
             Assert.Equal(1, totalStories);
         }
+        
         
         [Theory]
         [InlineData("author_id_1")]
@@ -55,17 +61,16 @@ namespace Repository.UnitTests
             // Arrange
             var newStory = new Story()
             {
-                Id = 1,
                 Title = "Story 1",
                 Body = "Body of Story 1",
                 PublishedDate = Convert.ToDateTime("2021-06-24T04:45:23.2321927Z"),
                 AuthorId = Guid.NewGuid().ToString()
             };
             
-            await _repositoryUnderTest.CreateStory(newStory);
+            await _sut.CreateStory(newStory);
             
             // Act
-            var totalStories = await _repositoryUnderTest.GetTotalStoriesByAuthor(authorId);
+            var totalStories = await _sut.GetTotalStoriesByAuthor(authorId);
             
             // Assert
             Assert.Equal(0, totalStories);
@@ -83,10 +88,10 @@ namespace Repository.UnitTests
                 PublishedDate = Convert.ToDateTime("2021-06-24T04:45:23.2321927Z"),
             };
             
-            await _repositoryUnderTest.CreateStory(newStory);
+            await _sut.CreateStory(newStory);
             
             // Act
-            var totalStories = await _repositoryUnderTest.GetTotalStories();
+            var totalStories = await _sut.GetTotalStories();
 
             // Assert
             Assert.Equal(1, totalStories);

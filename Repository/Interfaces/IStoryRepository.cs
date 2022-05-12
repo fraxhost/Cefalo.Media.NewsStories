@@ -8,7 +8,7 @@ namespace Repository.Interfaces
     public interface IStoryRepository
     {
         Task<int> GetTotalStories();
-        Task<Story> GetStory(int storyId);
+        Task<Story> GetStoryById(int storyId);
         Task<bool> CreateStory(Story story);
         Task<bool> UpdateStory(Story story);
         Task<bool> DeleteStory(Story story);
